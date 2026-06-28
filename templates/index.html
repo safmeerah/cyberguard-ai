@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CyberGuard AI — Cybersecurity Advisory System</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- Matrix rain background -->
+  <canvas id="matrixCanvas"></canvas>
+
+  <div class="app-wrapper">
+
+    <!-- ── Sidebar ── -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-shield">
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 2L4 9v10c0 10 7 18.5 16 21 9-2.5 16-11 16-21V9L20 2z" fill="none" stroke="#00ff88" stroke-width="2"/>
+            <path d="M13 20l5 5 9-9" stroke="#00ff88" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">CyberGuard</span>
+          <span class="brand-sub">AI Advisory System</span>
+        </div>
+      </div>
+
+      <div class="ai-badge" id="aiBadge">
+        <div class="ai-pulse" id="aiPulse"></div>
+        <span id="aiBadgeText">Checking connection…</span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="nav-btn active" data-tab="chat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <span>AI Advisor</span>
+        </button>
+        <button class="nav-btn" data-tab="threats">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <span>Threat Library</span>
+        </button>
+        <button class="nav-btn" data-tab="quiz">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <span>Security Quiz</span>
+        </button>
+        <button class="nav-btn" data-tab="password">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <span>Password Check</span>
+        </button>
+        <button class="nav-btn" data-tab="url">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <span>URL Analyzer</span>
+        </button>
+        <button class="nav-btn" data-tab="cve">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span>CVE Lookup</span>
+        </button>
+        <button class="nav-btn" data-tab="tips">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span>Daily Tips</span>
+        </button>
+
+        <div class="nav-divider">Advanced Features</div>
+
+        <button class="nav-btn nav-btn-soon" data-tab="scanner">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          <span>Threat Scanner</span>
+          <span class="soon-badge">Soon</span>
+        </button>
+        <button class="nav-btn nav-btn-soon" data-tab="darkweb">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <span>Dark Web Monitor</span>
+          <span class="soon-badge">Soon</span>
+        </button>
+        <button class="nav-btn nav-btn-soon" data-tab="fileanalyzer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          <span>File Analyzer</span>
+          <span class="soon-badge">Soon</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="hf-badge">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="#ffcc00"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+          <span>Hugging Face Inference</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ── Main Content ── -->
+    <main class="main-content">
+
+      <!-- Connection error banner (shown only when offline) -->
+      <div class="conn-banner" id="connBanner" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span id="connBannerText">Cannot reach Hugging Face API.</span>
+        <a class="conn-help" href="#" onclick="document.getElementById('tab-chat').querySelector('.msg-bubble p').scrollIntoView()">See troubleshooting tips below</a>
+        <button class="conn-retry" id="connRetry">Retry</button>
+      </div>
+
+      <!-- ════ TAB: AI Chat ════ -->
+      <section class="tab-panel active" id="tab-chat">
+        <div class="panel-header">
+          <h1>AI Cybersecurity Advisor</h1>
+          <p>Ask any question about cybersecurity threats, vulnerabilities, defenses, and best practices.</p>
+        </div>
+
+        <div class="chat-wrapper">
+          <div class="chat-messages" id="chatMessages">
+            <div class="message ai-message">
+              <div class="msg-avatar">AI</div>
+              <div class="msg-bubble">
+                <p>Hello! I'm <strong>CyberGuard AI</strong>, powered by Meta Llama 3.1. I'm your expert cybersecurity advisor.</p>
+                <p>I can help you with threat analysis, security best practices, vulnerability explanations, incident response guidance, and much more.</p>
+                <p>What cybersecurity topic can I help you with today?</p>
+                <span class="msg-time">System Ready</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="quick-prompts">
+            <span class="quick-label">Quick questions:</span>
+            <button class="quick-btn" data-q="What is phishing and how do I protect myself?">Phishing</button>
+            <button class="quick-btn" data-q="Explain ransomware and how to prevent it">Ransomware</button>
+            <button class="quick-btn" data-q="What are the top 5 cybersecurity best practices for 2024?">Best Practices</button>
+            <button class="quick-btn" data-q="How do I secure my home network?">Home Network</button>
+            <button class="quick-btn" data-q="What is two-factor authentication and should I use it?">2FA</button>
+          </div>
+
+          <div class="chat-input-row">
+            <input type="text" id="chatInput" class="chat-input" placeholder="Ask about threats, vulnerabilities, security practices..." autocomplete="off" />
+            <button id="sendBtn" class="send-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ════ TAB: Threat Library ════ -->
+      <section class="tab-panel" id="tab-threats">
+        <div class="panel-header">
+          <h1>Threat Library</h1>
+          <p>Select a threat category to get an AI-powered deep-dive analysis with prevention strategies.</p>
+        </div>
+
+        <div class="threat-grid">
+          <button class="threat-card" data-threat="Phishing Attacks">
+            <div class="threat-icon">🎣</div>
+            <div class="threat-name">Phishing</div>
+            <div class="threat-level critical">Critical</div>
+          </button>
+          <button class="threat-card" data-threat="Ransomware">
+            <div class="threat-icon">🔒</div>
+            <div class="threat-name">Ransomware</div>
+            <div class="threat-level critical">Critical</div>
+          </button>
+          <button class="threat-card" data-threat="SQL Injection">
+            <div class="threat-icon">💉</div>
+            <div class="threat-name">SQL Injection</div>
+            <div class="threat-level high">High</div>
+          </button>
+          <button class="threat-card" data-threat="Cross-Site Scripting (XSS)">
+            <div class="threat-icon">📜</div>
+            <div class="threat-name">XSS</div>
+            <div class="threat-level high">High</div>
+          </button>
+          <button class="threat-card" data-threat="Man-in-the-Middle (MITM) Attack">
+            <div class="threat-icon">👤</div>
+            <div class="threat-name">MITM Attack</div>
+            <div class="threat-level high">High</div>
+          </button>
+          <button class="threat-card" data-threat="DDoS Attack">
+            <div class="threat-icon">🌊</div>
+            <div class="threat-name">DDoS</div>
+            <div class="threat-level high">High</div>
+          </button>
+          <button class="threat-card" data-threat="Social Engineering">
+            <div class="threat-icon">🎭</div>
+            <div class="threat-name">Social Engineering</div>
+            <div class="threat-level high">High</div>
+          </button>
+          <button class="threat-card" data-threat="Zero-Day Exploit">
+            <div class="threat-icon">0️⃣</div>
+            <div class="threat-name">Zero-Day</div>
+            <div class="threat-level critical">Critical</div>
+          </button>
+          <button class="threat-card" data-threat="Malware and Trojans">
+            <div class="threat-icon">🦠</div>
+            <div class="threat-name">Malware</div>
+            <div class="threat-level high">High</div>
+          </button>
+          <button class="threat-card" data-threat="Brute Force Attack">
+            <div class="threat-icon">🔨</div>
+            <div class="threat-name">Brute Force</div>
+            <div class="threat-level medium">Medium</div>
+          </button>
+          <button class="threat-card" data-threat="Insider Threat">
+            <div class="threat-icon">🕵️</div>
+            <div class="threat-name">Insider Threat</div>
+            <div class="threat-level high">High</div>
+          </button>
+          <button class="threat-card" data-threat="Supply Chain Attack">
+            <div class="threat-icon">⛓️</div>
+            <div class="threat-name">Supply Chain</div>
+            <div class="threat-level critical">Critical</div>
+          </button>
+        </div>
+
+        <div class="threat-result" id="threatResult" style="display:none;">
+          <div class="result-header">
+            <h3 id="threatResultTitle"></h3>
+            <button class="close-btn" id="closeThreat">✕</button>
+          </div>
+          <div class="result-body" id="threatResultBody"></div>
+        </div>
+      </section>
+
+      <!-- ════ TAB: Quiz ════ -->
+      <section class="tab-panel" id="tab-quiz">
+        <div class="panel-header">
+          <h1>Security Awareness Quiz</h1>
+          <p>Test your cybersecurity knowledge with AI-generated questions.</p>
+        </div>
+
+        <div class="quiz-controls">
+          <label class="select-label">Topic:</label>
+          <select id="quizTopic" class="styled-select">
+            <option value="general cybersecurity">General Cybersecurity</option>
+            <option value="phishing and social engineering">Phishing &amp; Social Engineering</option>
+            <option value="password security">Password Security</option>
+            <option value="network security">Network Security</option>
+            <option value="malware and ransomware">Malware &amp; Ransomware</option>
+            <option value="web application security">Web Application Security</option>
+            <option value="data privacy and GDPR">Data Privacy &amp; GDPR</option>
+            <option value="mobile device security">Mobile Security</option>
+          </select>
+          <button id="newQuestionBtn" class="primary-btn">Generate Question</button>
+        </div>
+
+        <div class="quiz-score-bar">
+          <span>Score: <strong id="quizScore">0</strong> / <strong id="quizTotal">0</strong></span>
+          <button class="text-btn" id="resetScore">Reset</button>
+        </div>
+
+        <div class="quiz-card" id="quizCard" style="display:none;">
+          <div class="quiz-loading" id="quizLoading" style="display:none;">
+            <div class="spinner"></div><span>Generating question…</span>
+          </div>
+          <div id="quizContent">
+            <p class="quiz-question" id="quizQuestion"></p>
+            <div class="quiz-options" id="quizOptions"></div>
+            <div class="quiz-feedback" id="quizFeedback" style="display:none;"></div>
+            <button class="primary-btn" id="nextQuestionBtn" style="display:none; margin-top:1.2rem;">Next Question</button>
+          </div>
+        </div>
+
+        <div class="quiz-start-prompt" id="quizStartPrompt">
+          <div class="start-icon">🎯</div>
+          <p>Choose a topic and click <strong>Generate Question</strong> to start.</p>
+        </div>
+      </section>
+
+      <!-- ════ TAB: Password Checker ════ -->
+      <section class="tab-panel" id="tab-password">
+        <div class="panel-header">
+          <h1>Password Strength Analyzer</h1>
+          <p>Check how strong your password is. Analysis happens locally — nothing is sent to any server.</p>
+        </div>
+
+        <div class="password-checker-card">
+          <div class="pw-input-row">
+            <input type="password" id="pwInput" class="pw-input" placeholder="Enter a password to analyze…" autocomplete="new-password" />
+            <button id="pwToggle" class="icon-btn" title="Show/hide password">👁</button>
+          </div>
+
+          <div class="strength-bar-container">
+            <div class="strength-bar" id="strengthBar">
+              <div class="strength-fill" id="strengthFill"></div>
+            </div>
+            <span class="strength-label" id="strengthLabel">—</span>
+          </div>
+
+          <div class="pw-criteria" id="pwCriteria">
+            <div class="criterion" id="crit-length">
+              <span class="crit-icon">○</span> At least 12 characters
+            </div>
+            <div class="criterion" id="crit-upper">
+              <span class="crit-icon">○</span> Uppercase letters (A–Z)
+            </div>
+            <div class="criterion" id="crit-lower">
+              <span class="crit-icon">○</span> Lowercase letters (a–z)
+            </div>
+            <div class="criterion" id="crit-number">
+              <span class="crit-icon">○</span> Numbers (0–9)
+            </div>
+            <div class="criterion" id="crit-special">
+              <span class="crit-icon">○</span> Special characters (!@#$…)
+            </div>
+            <div class="criterion" id="crit-nocommon">
+              <span class="crit-icon">○</span> Not a common password
+            </div>
+          </div>
+
+          <div class="pw-stats" id="pwStats" style="display:none;">
+            <div class="stat-item">
+              <span class="stat-label">Entropy</span>
+              <span class="stat-value" id="statEntropy">—</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Length</span>
+              <span class="stat-value" id="statLength">—</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Est. Crack Time</span>
+              <span class="stat-value" id="statCrackTime">—</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Character Pool</span>
+              <span class="stat-value" id="statPool">—</span>
+            </div>
+          </div>
+
+          <div class="pw-tip" id="pwTip"></div>
+        </div>
+      </section>
+
+      <!-- ════ TAB: URL Analyzer ════ -->
+      <section class="tab-panel" id="tab-url">
+        <div class="panel-header">
+          <h1>URL Phishing Analyzer</h1>
+          <p>Paste a suspicious URL to get an AI-powered structural analysis for phishing indicators.</p>
+        </div>
+
+        <div class="url-card">
+          <div class="url-input-row">
+            <input type="text" id="urlInput" class="url-input" placeholder="https://suspicious-site.example.com/login" />
+            <button id="analyzeUrlBtn" class="primary-btn">Analyze</button>
+          </div>
+          <p class="url-note">⚠️ Do not visit unknown URLs. This tool analyzes the URL structure only — it does not visit the site.</p>
+
+          <div class="url-result" id="urlResult" style="display:none;">
+            <div class="result-header"><h3>Analysis Result</h3></div>
+            <div class="result-body" id="urlResultBody"></div>
+          </div>
+          <div class="loading-block" id="urlLoading" style="display:none;">
+            <div class="spinner"></div><span>Analyzing URL…</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ════ TAB: CVE Lookup ════ -->
+      <section class="tab-panel" id="tab-cve">
+        <div class="panel-header">
+          <h1>CVE Vulnerability Lookup</h1>
+          <p>Enter a CVE identifier or vulnerability name to get an AI explanation in plain language.</p>
+        </div>
+
+        <div class="cve-card">
+          <div class="cve-input-row">
+            <input type="text" id="cveInput" class="url-input" placeholder="e.g. CVE-2021-44228 or Log4Shell" />
+            <button id="lookupCveBtn" class="primary-btn">Explain</button>
+          </div>
+
+          <div class="cve-examples">
+            <span class="quick-label">Try:</span>
+            <button class="quick-btn" data-cve="CVE-2021-44228">Log4Shell</button>
+            <button class="quick-btn" data-cve="CVE-2017-0144">EternalBlue</button>
+            <button class="quick-btn" data-cve="CVE-2014-0160">Heartbleed</button>
+            <button class="quick-btn" data-cve="CVE-2021-34527">PrintNightmare</button>
+          </div>
+
+          <div class="cve-result" id="cveResult" style="display:none;">
+            <div class="result-header"><h3 id="cveResultTitle"></h3></div>
+            <div class="result-body" id="cveResultBody"></div>
+          </div>
+          <div class="loading-block" id="cveLoading" style="display:none;">
+            <div class="spinner"></div><span>Looking up CVE…</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ════ TAB: Daily Tips ════ -->
+      <section class="tab-panel" id="tab-tips">
+        <div class="panel-header">
+          <h1>Daily Security Tips</h1>
+          <p>AI-generated cybersecurity tips to improve your security posture.</p>
+        </div>
+
+        <div class="tips-container">
+          <div class="tip-card main-tip" id="mainTipCard">
+            <div class="tip-date" id="tipDate"></div>
+            <div class="tip-icon">💡</div>
+            <div class="tip-content" id="tipContent">
+              <div class="loading-block">
+                <div class="spinner"></div><span>Loading today's tip…</span>
+              </div>
+            </div>
+            <button class="secondary-btn" id="newTipBtn">Generate New Tip</button>
+          </div>
+
+          <div class="static-tips">
+            <h3>Essential Security Rules</h3>
+            <div class="static-tip-list">
+              <div class="static-tip">
+                <span class="tip-num">01</span>
+                <div><strong>Use unique passwords for every account.</strong> A breach on one site won't cascade to others.</div>
+              </div>
+              <div class="static-tip">
+                <span class="tip-num">02</span>
+                <div><strong>Enable MFA everywhere it's offered.</strong> Even if your password leaks, attackers can't log in.</div>
+              </div>
+              <div class="static-tip">
+                <span class="tip-num">03</span>
+                <div><strong>Keep software and OS updated.</strong> Most attacks exploit known, already-patched vulnerabilities.</div>
+              </div>
+              <div class="static-tip">
+                <span class="tip-num">04</span>
+                <div><strong>Be skeptical of unsolicited emails and links.</strong> Verify sender identity before clicking anything.</div>
+              </div>
+              <div class="static-tip">
+                <span class="tip-num">05</span>
+                <div><strong>Back up data using the 3-2-1 rule.</strong> 3 copies, 2 media types, 1 offsite location.</div>
+              </div>
+              <div class="static-tip">
+                <span class="tip-num">06</span>
+                <div><strong>Use a reputable VPN on public Wi-Fi.</strong> Prevents eavesdropping on unencrypted networks.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ════ Coming Soon: Threat Scanner ════ -->
+      <section class="tab-panel" id="tab-scanner">
+        <div class="panel-header">
+          <h1>Live Threat Scanner</h1>
+          <p>Real-time network vulnerability scanning and active threat detection.</p>
+        </div>
+        <div class="coming-soon-panel">
+          <div class="cs-icon">🔬</div>
+          <h2>Coming Soon</h2>
+          <p>The Live Threat Scanner will perform real-time network port scanning and vulnerability detection using integrated tools like Nmap and OpenVAS. This feature requires direct network access and advanced backend infrastructure currently under development.</p>
+          <div class="cs-features">
+            <div class="cs-feature"><span class="cs-dot"></span>Network port scan &amp; service fingerprinting</div>
+            <div class="cs-feature"><span class="cs-dot"></span>CVE-matched vulnerability detection</div>
+            <div class="cs-feature"><span class="cs-dot"></span>Real-time scan progress dashboard</div>
+            <div class="cs-feature"><span class="cs-dot"></span>Exportable PDF reports</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ════ Coming Soon: Dark Web Monitor ════ -->
+      <section class="tab-panel" id="tab-darkweb">
+        <div class="panel-header">
+          <h1>Dark Web Monitor</h1>
+          <p>Monitor the dark web for leaked credentials, data breaches, and threat actor chatter.</p>
+        </div>
+        <div class="coming-soon-panel">
+          <div class="cs-icon">🌐</div>
+          <h2>Coming Soon</h2>
+          <p>The Dark Web Monitor will use specialised threat intelligence APIs to continuously scan dark web forums, paste sites, and breach databases for mentions of your organisation's email domains, credentials, or sensitive data.</p>
+          <div class="cs-features">
+            <div class="cs-feature"><span class="cs-dot"></span>Email &amp; domain breach detection</div>
+            <div class="cs-feature"><span class="cs-dot"></span>Leaked credential alerts</div>
+            <div class="cs-feature"><span class="cs-dot"></span>Threat actor forum monitoring</div>
+            <div class="cs-feature"><span class="cs-dot"></span>Automated alert notifications</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ════ Coming Soon: File Analyzer ════ -->
+      <section class="tab-panel" id="tab-fileanalyzer">
+        <div class="panel-header">
+          <h1>File Malware Analyzer</h1>
+          <p>Upload files for sandbox-based malware analysis and behavioural threat detection.</p>
+        </div>
+        <div class="coming-soon-panel">
+          <div class="cs-icon">🦠</div>
+          <h2>Coming Soon</h2>
+          <p>The File Malware Analyzer will allow uploading of suspicious files into an isolated sandbox environment for dynamic behavioural analysis, static signature scanning, and AI-assisted threat classification using multiple antivirus engines.</p>
+          <div class="cs-features">
+            <div class="cs-feature"><span class="cs-dot"></span>Multi-engine antivirus scanning (VirusTotal)</div>
+            <div class="cs-feature"><span class="cs-dot"></span>Dynamic behavioural sandbox analysis</div>
+            <div class="cs-feature"><span class="cs-dot"></span>PE/ELF/APK static code analysis</div>
+            <div class="cs-feature"><span class="cs-dot"></span>Threat classification &amp; severity rating</div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
