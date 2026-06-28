@@ -13,9 +13,9 @@ app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET_KEY", "fallback-secret-key")
 CORS(app)
 
-HF_API_KEY = os.getenv("HF_API_KEY")
-MODEL_ID = "meta-llama/Llama-3.1-8B-Instruct"
-HF_API_URL = "https://api-inference.huggingface.co/v1/chat/completions"
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+MODEL_ID     = "llama-3.1-8b-instant"
+GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
 
 SYSTEM_PROMPT = (
     "You are CyberGuard AI, a world-class cybersecurity expert advisor powered by Meta Llama. "
@@ -36,11 +36,11 @@ def _get_session() -> requests.Session:
 
 
 def call_llama(messages: list, max_tokens: int = 600) -> str:
-    if not HF_API_KEY:
-        return "Error: HF_API_KEY not configured. Please check your .env file."
+    if not GROQ_API_KEY:
+        return "Error: GROQ_API_KEY not configured. Please check your .env file."
 
     headers = {
-        "Authorization": f"Bearer {HF_API_KEY}",
+        "Authorization": f"Bearer {GROQ_API_KEY}",
         "Content-Type": "application/json",
     }
     payload = {
@@ -53,34 +53,29 @@ def call_llama(messages: list, max_tokens: int = 600) -> str:
 
     try:
         session = _get_session()
-        resp = session.post(HF_API_URL, headers=headers, json=payload, timeout=90)
+        resp = session.post(GROQ_API_URL, headers=headers, json=payload, timeout=60)
         resp.raise_for_status()
         return resp.json()["choices"][0]["message"]["content"]
     except requests.exceptions.ConnectionError:
         return (
-            "NETWORK_ERROR: Cannot reach the Hugging Face API.\n\n"
+            "NETWORK_ERROR: Cannot reach the Groq API.\n\n"
             "Troubleshooting steps:\n"
             "1. Check your internet connection is active\n"
-            "2. Open a browser and visit huggingface.co to confirm access\n"
+            "2. Open a browser and visit console.groq.com to confirm access\n"
             "3. If on a university/work network, you may need a proxy — "
             "add HTTP_PROXY=http://your-proxy:port to the .env file\n"
-            "4. A firewall may be blocking outbound HTTPS connections"
+            "4. A firewall may be blocking outbound HTTPS connections to api.groq.com"
         )
     except requests.exceptions.Timeout:
         return (
             "TIMEOUT: The model took too long to respond. "
-            "Hugging Face may be loading the model (first request can take ~30s). "
             "Please try again."
         )
     except requests.exceptions.HTTPError:
-        if resp.status_code == 403:
-            return (
-                "ACCESS DENIED (403): You need to accept Meta's license first.\n"
-                "Visit: huggingface.co/meta-llama/Llama-3.1-8B-Instruct\n"
-                "Log in with your Hugging Face account and click 'Agree and access repository'."
-            )
         if resp.status_code == 401:
-            return "UNAUTHORIZED (401): Your API key is invalid or expired. Check HF_API_KEY in .env."
+            return "UNAUTHORIZED (401): Your Groq API key is invalid or expired. Check GROQ_API_KEY in .env."
+        if resp.status_code == 429:
+            return "RATE LIMITED (429): Too many requests. Please wait a moment and try again."
         return f"API error ({resp.status_code}): {resp.text[:300]}"
     except Exception as e:
         return f"Unexpected error: {str(e)}"
@@ -240,22 +235,22 @@ def explain_cve():
 @app.route("/api/status", methods=["GET"])
 def status():
     """Quick connectivity check used by the frontend on page load."""
-    if not HF_API_KEY:
-        return jsonify({"ok": False, "reason": "HF_API_KEY missing in .env"})
+    if not GROQ_API_KEY:
+        return jsonify({"ok": False, "reason": "GROQ_API_KEY missing in .env"})
     try:
         session = _get_session()
         r = session.get(
-            "https://huggingface.co/api/whoami",
-            headers={"Authorization": f"Bearer {HF_API_KEY}"},
+            "https://api.groq.com/openai/v1/models",
+            headers={"Authorization": f"Bearer {GROQ_API_KEY}"},
             timeout=10,
         )
         if r.status_code == 200:
-            return jsonify({"ok": True, "user": r.json().get("name", "unknown")})
+            return jsonify({"ok": True, "user": "Groq API connected"})
         if r.status_code == 401:
-            return jsonify({"ok": False, "reason": "Invalid API key (401)"})
-        return jsonify({"ok": False, "reason": f"HF returned {r.status_code}"})
+            return jsonify({"ok": False, "reason": "Invalid Groq API key (401)"})
+        return jsonify({"ok": False, "reason": f"Groq returned {r.status_code}"})
     except requests.exceptions.ConnectionError:
-        return jsonify({"ok": False, "reason": "Cannot reach huggingface.co — check internet / proxy"})
+        return jsonify({"ok": False, "reason": "Cannot reach api.groq.com — check internet / proxy"})
     except Exception as e:
         return jsonify({"ok": False, "reason": str(e)})
 
@@ -263,7 +258,7 @@ def status():
 if __name__ == "__main__":
     print("\n" + "=" * 55)
     print("  CyberGuard AI — Cybersecurity Advisory System")
-    print("  Powered by Meta Llama via Hugging Face")
+    print("  Powered by Meta Llama via Groq")
     print("=" * 55)
     print(f"  Running at: http://127.0.0.1:5000")
     print("=" * 55 + "\n")
